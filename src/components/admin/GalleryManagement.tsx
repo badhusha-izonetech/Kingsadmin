@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Edit, Image as ImageIcon, Play, Plus, Trash2, Upload, Video } from "lucide-react";
+import { Edit, Image as ImageIcon, Play, Plus, Trash2, Video } from "lucide-react";
 
 const categories = ["Campus", "Events", "Training", "Workshop", "Facilities", "Students", "Graduation"];
 
@@ -253,13 +253,6 @@ const GalleryManagement = () => {
                 )}
               </div>
             )}
-
-            <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Upload className="h-4 w-4" />
-                Files are stored as local preview data in the current frontend demo setup.
-              </div>
-            </div>
 
             <div className="flex justify-end gap-3">
               <Button type="button" variant="outline" onClick={() => setShowDialog(false)}>

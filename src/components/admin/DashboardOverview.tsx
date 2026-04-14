@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   BookOpen,
-  CalendarClock,
   GraduationCap,
   Image as ImageIcon,
   Megaphone,
@@ -10,7 +9,6 @@ import {
   Users,
 } from "lucide-react";
 import { api } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -113,22 +111,11 @@ const DashboardOverview = ({ onOpenSection }: DashboardOverviewProps) => {
     },
   ];
 
-  const healthItems = [
-    {
-      title: "Dashboard route restored",
-      description: "Admin modules are mounted again and can be opened from the tab bar.",
-      status: "Live",
-    },
-    {
-      title: "Auth guard active",
-      description: "Users without an admin token are redirected back to the login page.",
-      status: "Protected",
-    },
-    {
-      title: "Demo API connected",
-      description: "Local mock handlers respond instantly while backend integration is cleaned up.",
-      status: "Demo",
-    },
+  const quickActions = [
+    { label: "Review course enquiries", target: "course-enquiries" },
+    { label: "Publish announcement", target: "announcements" },
+    { label: "Update gallery", target: "gallery" },
+    { label: "Manage popup", target: "popups" },
   ];
 
   return (
@@ -178,53 +165,20 @@ const DashboardOverview = ({ onOpenSection }: DashboardOverviewProps) => {
         })}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="grid gap-6">
         <Card className="rounded-[1.75rem] border-border/80 shadow-sm">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <CalendarClock className="h-5 w-5 text-primary" />
-              Admin Health
-            </CardTitle>
-            <CardDescription>Key checks to help you confirm the dashboard is functioning again.</CardDescription>
+            <CardTitle className="text-xl">Quick Actions</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {healthItems.map((item) => (
-              <div
-                key={item.title}
-                className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-muted/30 p-4 md:flex-row md:items-center md:justify-between"
-              >
-                <div>
-                  <p className="font-medium text-foreground">{item.title}</p>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </div>
-                <Badge variant="outline" className="self-start rounded-full px-3 py-1 md:self-auto">
-                  {item.status}
-                </Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-[1.75rem] border-border/80 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-xl">Next Actions</CardTitle>
-            <CardDescription>Jump into the sections that admins use most often.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-3">
-            {[
-              { label: "Review new course enquiries", target: "course-enquiries" },
-              { label: "Publish an announcement", target: "announcements" },
-              { label: "Update the gallery", target: "gallery" },
-              { label: "Manage popup campaigns", target: "popups" },
-            ].map((action) => (
+          <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {quickActions.map((action) => (
               <button
                 key={action.target}
                 type="button"
                 onClick={() => onOpenSection?.(action.target)}
-                className="rounded-2xl border border-border/70 bg-background px-4 py-4 text-left transition-colors hover:bg-muted"
+                className="rounded-md border border-border/70 bg-background px-4 py-4 text-left font-medium text-foreground transition-colors hover:bg-muted"
               >
-                <p className="font-medium text-foreground">{action.label}</p>
-                <p className="mt-1 text-sm text-muted-foreground">Open this section in the dashboard</p>
+                {action.label}
               </button>
             ))}
           </CardContent>

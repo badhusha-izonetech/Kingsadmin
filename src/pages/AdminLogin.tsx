@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,9 +17,8 @@ const AdminLogin = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate frontend-only login
     setTimeout(() => {
-      localStorage.setItem("adminToken", "frontend-demo-token-" + Date.now());
+      localStorage.setItem("adminToken", "admin-token-" + Date.now());
       navigate("/admin/dashboard");
       setIsLoading(false);
     }, 800);
@@ -79,7 +78,7 @@ const AdminLogin = () => {
                    <Input
                     id="password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder="Enter your password"
                     className="pl-12 h-14 rounded-2xl border-[#c9a84c]/30 !bg-[#1a150e] text-white focus:!bg-[#1a150e] focus:border-[#c9a84c] transition-all [&:-webkit-autofill]:shadow-[0_0_0_1000px_#1a150e_inset] [&:-webkit-autofill]:[-webkit-text-fill-color:white]"
                     value={credentials.password}
                     onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
@@ -102,22 +101,8 @@ const AdminLogin = () => {
                   </>
                 )}
               </Button>
-
-              <div className="pt-4 text-center">
-                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">
-                  Secure Institutional Access
-                </p>
-              </div>
             </form>
           </div>
-        </div>
-
-        <div className="mt-8 text-center flex items-center justify-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            Front-End Demo Mode Active
-          </p>
-          <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
         </div>
       </div>
     </div>
