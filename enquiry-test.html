@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enquiry System Test - Kings Dental Academy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .test-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        #testResults {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Enquiry System Test Page</h1>
+        <p>This page helps you test the enquiry functionality of Kings Dental Academy.</p>
+        
+        <div class="status info">
+            <strong>📋 Test Instructions:</strong><br>
+            1. Make sure both backend and frontend are running<br>
+            2. Test the enquiry submission below<br>
+            3. Check admin dashboard for immediate updates<br>
+            4. Verify course details modal works properly
+        </div>
+
+        <div class="step">
+            <h3>Step 1: System Status Check</h3>
+            <div id="systemStatus">Checking system status...</div>
+            <button onclick="checkSystemStatus()" class="button">🔄 Check Status</button>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Test Enquiry Submission</h3>
+            <div class="test-form">
+                <h4>Submit Test Enquiry</h4>
+                <form id="testEnquiryForm">
+                    <div class="form-group">
+                        <label for="studentName">Student Name:</label>
+                        <input type="text" id="studentName" value="Test Student" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" value="test@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" value="+91 9876543210" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="college">College:</label>
+                        <input type="text" id="college" value="Test Dental College" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseName">Course:</label>
+                        <input type="text" id="courseName" value="Advanced Implantology Fellowship" required>
+                    </div>
+                    <button type="submit" class="button">📝 Submit Test Enquiry</button>
+                </form>
+            </div>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Check Admin Dashboard</h3>
+            <p>After submitting the enquiry above, check the admin dashboard:</p>
+            <a href="http://localhost:5173/admin/login" target="_blank" class="button">🔐 Open Admin Dashboard</a>
+            <p class="text-sm">Login: admin / admin123 → Go to "Course Enquiries"</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 4: Test Course Details Modal</h3>
+            <p>Test the enhanced course details display:</p>
+            <a href="http://localhost:5173/" target="_blank" class="button">🏠 Open Main Website</a>
+            <p class="text-sm">Click "Details" button on any course - should open modal (not alert!)</p>
+        </div>
+
+        <div class="status warning">
+            <strong>⚠️ Expected Behavior:</strong><br>
+            • Course details should open in modal window (not browser alert)<br>
+            • Enquiry submission should show success message<br>
+            • New enquiry should appear in admin dashboard within 3 seconds<br>
+            • Admin dashboard should show "Auto-refreshing every 3s" indicator
+        </div>
+
+        <div class="step">
+            <h3>🐛 Debug Information</h3>
+            <div id="debugInfo">
+                <p><strong>Current Time:</strong> <span id="currentTime"></span></p>
+                <p><strong>Last API Call:</strong> <span id="lastApiCall">Never</span></p>
+                <p><strong>Test Count:</strong> <span id="testCount">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testCounter = 0;
+        
+        function updateTime() {
+            document.getElementById('currentTime').textContent = new Date().toLocaleTimeString();
+        }
+        
+        async function checkSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            statusDiv.innerHTML = 'Checking...';
+            
+            try {
+                // Check backend
+                const backendResponse = await fetch('http://localhost:8000/');
+                const backendData = await backendResponse.json();
+                
+                // Check enquiries endpoint
+                const enquiriesResponse = await fetch('http://localhost:8000/api/enquiries');
+                const enquiriesData = await enquiriesResponse.json();
+                
+                statusDiv.innerHTML = `
+                    <div class="success">✅ Backend: ${backendData.message || 'Running'}</div>
+                    <div class="success">✅ Enquiries API: Working (${enquiriesData.length} enquiries found)</div>
+                    <div class="info">🔗 API Base: http://localhost:8000</div>
+                    <div class="info">🌐 Frontend: http://localhost:5173</div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px;">
+                        ❌ Error: ${error.message}<br>
+                        Make sure both backend and frontend are running!
+                    </div>
+                `;
+            }
+        }
+        
+        // Handle test enquiry form submission
+        document.getElementById('testEnquiryForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.className = 'info';
+            resultsDiv.innerHTML = 'Submitting test enquiry...';
+            
+            testCounter++;
+            document.getElementById('testCount').textContent = testCounter;
+            document.getElementById('lastApiCall').textContent = new Date().toLocaleTimeString();
+            
+            try {
+                const formData = {
+                    studentName: document.getElementById('studentName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    college: document.getElementById('college').value,
+                    courseName: document.getElementById('courseName').value
+                };
+                
+                const response = await fetch('http://localhost:8000/api/enquiries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    resultsDiv.className = 'success';
+                    resultsDiv.innerHTML = `
+                        <strong>🎉 Test Enquiry Submitted Successfully!</strong><br>
+                        <strong>Enquiry ID:</strong> ${result.id}<br>
+                        <strong>Student:</strong> ${result.studentName}<br>
+                        <strong>Course:</strong> ${result.courseName}<br>
+                        <br>
+                        <strong>✅ Next Steps:</strong><br>
+                        1. Open Admin Dashboard (link above)<br>
+                        2. Go to "Course Enquiries"<br>
+                        3. Your test enquiry should appear within 3 seconds!
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+            } catch (error) {
+                resultsDiv.className = 'status';
+                resultsDiv.style.backgroundColor = '#f8d7da';
+                resultsDiv.style.color = '#721c24';
+                resultsDiv.innerHTML = `
+                    <strong>❌ Test Failed:</strong><br>
+                    ${error.message}<br>
+                    <br>
+                    <strong>Troubleshooting:</strong><br>
+                    • Check if backend is running on port 8000<br>
+                    • Verify database connection<br>
+                    • Check browser console for more details
+                `;
+            }
+        });
+        
+        // Auto-update time every second
+        setInterval(updateTime, 1000);
+        
+        // Initial checks
+        updateTime();
+        checkSystemStatus();
+        
+        console.log('🧪 Enquiry Test Page Loaded');
+        console.log('📝 Instructions:');
+        console.log('1. Submit test enquiry using form above');
+        console.log('2. Check admin dashboard for immediate updates');
+        console.log('3. Test course details modal on main website');
+    </script>
+</body>
+</html>

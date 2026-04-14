@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Test - Kings Dental Academy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #popupStatus {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Popup System Test Page</h1>
+        <p>This page helps you test the popup functionality of Kings Dental Academy.</p>
+        
+        <div class="status info">
+            <strong>📋 Test Instructions:</strong><br>
+            1. Make sure both backend and frontend are running<br>
+            2. Create a popup in the admin dashboard<br>
+            3. Set status to "Active"<br>
+            4. Watch this page for the popup to appear
+        </div>
+
+        <div class="step">
+            <h3>Step 1: Check System Status</h3>
+            <div id="systemStatus">Checking system status...</div>
+            <button onclick="checkSystemStatus()" class="button">🔄 Refresh Status</button>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Check for Active Popups</h3>
+            <div id="popupStatus">Checking for active popups...</div>
+            <button onclick="checkActivePopup()" class="button">🔍 Check Popup</button>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Quick Links</h3>
+            <a href="http://localhost:5173/admin/login" target="_blank" class="button">🔐 Admin Login</a>
+            <a href="http://localhost:5173/" target="_blank" class="button">🏠 Main Site</a>
+            <a href="http://localhost:8000/docs" target="_blank" class="button">📚 API Docs</a>
+        </div>
+
+        <div class="status warning">
+            <strong>⚠️ Expected Behavior:</strong><br>
+            • Popups should appear within 2 seconds of being created<br>
+            • Only "Active" status popups are shown<br>
+            • Each popup shows once per browser session<br>
+            • Popups reappear on page reload (unless manually closed)
+        </div>
+
+        <div class="step">
+            <h3>🐛 Debug Information</h3>
+            <div id="debugInfo">
+                <p><strong>Current Time:</strong> <span id="currentTime"></span></p>
+                <p><strong>Last Check:</strong> <span id="lastCheck">Never</span></p>
+                <p><strong>Check Count:</strong> <span id="checkCount">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let checkCounter = 0;
+        
+        function updateTime() {
+            document.getElementById('currentTime').textContent = new Date().toLocaleTimeString();
+        }
+        
+        async function checkSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            statusDiv.innerHTML = 'Checking...';
+            
+            try {
+                // Check backend
+                const backendResponse = await fetch('http://localhost:8000/');
+                const backendData = await backendResponse.json();
+                
+                // Check frontend (this page loading means frontend is working)
+                const frontendStatus = window.location.protocol === 'http:' ? 'Running' : 'Unknown';
+                
+                statusDiv.innerHTML = `
+                    <div class="success">✅ Backend: ${backendData.message || 'Running'}</div>
+                    <div class="success">✅ Frontend: ${frontendStatus}</div>
+                    <div class="info">🔗 API Base: http://localhost:8000</div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px;">
+                        ❌ Error: ${error.message}<br>
+                        Make sure both backend and frontend are running!
+                    </div>
+                `;
+            }
+        }
+        
+        async function checkActivePopup() {
+            const statusDiv = document.getElementById('popupStatus');
+            checkCounter++;
+            document.getElementById('checkCount').textContent = checkCounter;
+            document.getElementById('lastCheck').textContent = new Date().toLocaleTimeString();
+            
+            statusDiv.innerHTML = 'Checking for active popups...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/popup/active');
+                const popup = await response.json();
+                
+                if (popup && popup.status === 'active') {
+                    statusDiv.innerHTML = `
+                        <div class="success">
+                            🎉 <strong>Active Popup Found!</strong><br>
+                            <strong>Title:</strong> ${popup.title}<br>
+                            <strong>Description:</strong> ${popup.description}<br>
+                            <strong>Status:</strong> ${popup.status}<br>
+                            <strong>Created:</strong> ${new Date(popup.created_at).toLocaleString()}<br>
+                            <em>This popup should appear on the main site within 2 seconds!</em>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="warning">
+                            ⚠️ <strong>No Active Popup Found</strong><br>
+                            Create a popup in the admin dashboard and set status to "Active"
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px;">
+                        ❌ Error checking popup: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-update time every second
+        setInterval(updateTime, 1000);
+        
+        // Auto-check for popups every 5 seconds
+        setInterval(checkActivePopup, 5000);
+        
+        // Initial checks
+        updateTime();
+        checkSystemStatus();
+        checkActivePopup();
+        
+        console.log('🧪 Popup Test Page Loaded');
+        console.log('📝 Instructions:');
+        console.log('1. Create popup in admin dashboard');
+        console.log('2. Set status to "Active"');
+        console.log('3. Watch for popup to appear on main site');
+    </script>
+</body>
+</html>
